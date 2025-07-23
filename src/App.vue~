@@ -1,0 +1,45 @@
+<template>
+  <h1>WebSocket Chat</h1>
+  <form action="">
+    <input type="text" v-model="messageText" autocomplete="off"/>
+    <button @click.prevent="sendMessage" type="submit">Send</button>
+  </form>
+  <ul>
+    <li v-for="message in messages">{{ message }}</li>
+  </ul>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      messages: [],
+      messageText: "",
+      ws: null
+    }
+  },
+  methods:{
+    sendMessage(event) {
+      this.ws.send(this.messageText)
+      this.messageText = ''
+      event.preventDefault()
+    }
+  },
+  mounted() {
+    this.ws = new WebSocket("ws://192.168.204.87:8000/ws")
+    this.ws.onmessage = (event) => {
+      console.log(event.data)
+      this.messages.push(event.data)
+    }
+  }
+}
+</script>
+
+
+<style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+</style>
